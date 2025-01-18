@@ -1,5 +1,7 @@
 export default interface Paginate {
-  page: number
+  count: number
+  next: string | null
+  previous: string | null
   limit: number
   offset: number
 }

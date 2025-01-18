@@ -1,5 +1,5 @@
 import mapPokemon from '@/helpers/mapPokemon'
-import type PokemonRepository from '../interfaces/PokemonRepository'
+import type IPokemonRepository from '../interfaces/PokemonRepository'
 import axios from 'axios'
 
 const axiosInstance = axios.create({
@@ -7,11 +7,10 @@ const axiosInstance = axios.create({
   timeout: 5000,
 })
 
-const PokemonRepository: PokemonRepository = {
-  getAllPokemons: async () => {
+const PokemonRepository: IPokemonRepository = {
+  getAllPokemons: async (offset: number = 0, limit: number = 20) => {
     const response = await axiosInstance.get('/pokemon')
-    const { data } = response
-    return data.results
+    return response.data
   },
   getPokemon: async (id: number) => {
     const response = await axiosInstance.get(`/pokemon/${id}`)

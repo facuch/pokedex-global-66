@@ -1,4 +1,6 @@
-export default interface AllPokemonsResponse {
-  pokemon: string
-  url: string
+import type Paginate from './Paginate'
+import type SimplePokemon from './SimplePokemon'
+
+export default interface AllPokemonsResponse extends Paginate {
+  results: SimplePokemon[]
 }
