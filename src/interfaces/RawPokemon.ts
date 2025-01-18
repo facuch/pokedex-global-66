@@ -1,7 +1,9 @@
-export default interface IRawPokemon {
+import type Type from './Type'
+
+export default interface RawPokemon {
   name: string
   id: number
-  type: string[]
+  types: Type[]
   height: number
   weight: number
   sprites: {

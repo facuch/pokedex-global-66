@@ -1,17 +1,23 @@
 import type Pokemon from '@/interfaces/Pokemon'
-import type IRawPokemon from '@/interfaces/IRawPokemon'
+import type RawPokemon from '@/interfaces/RawPokemon'
+import type Type from '@/interfaces/Type'
 
-const mapPokemon = (rawPokemon: IRawPokemon[]): Pokemon[] => {
-  return rawPokemon.map((pokemon) => {
-    return {
-      id: pokemon.id,
-      name: pokemon.name,
-      type: pokemon.type,
-      height: pokemon.height,
-      weight: pokemon.weight,
-      image: pokemon.sprites.front_default,
-    }
-  })
+const typeMapper = (types: Type[]): string => {
+  if (types.length === 1) {
+    return types[0].type.name
+  }
+  return types.map((type) => type.type.name).join(', ')
+}
+
+const mapPokemon = (rawPokemon: RawPokemon): Pokemon => {
+  return {
+    id: rawPokemon.id,
+    name: rawPokemon.name,
+    type: typeMapper(rawPokemon.types),
+    height: rawPokemon.height,
+    weight: rawPokemon.weight,
+    image: rawPokemon.sprites.front_default,
+  }
 }
 
 export default mapPokemon
