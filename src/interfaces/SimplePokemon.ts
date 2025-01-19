@@ -1,4 +1,4 @@
 export default interface SimplePokemon {
-  pokemon: string
+  name: string
   url: string
 }
