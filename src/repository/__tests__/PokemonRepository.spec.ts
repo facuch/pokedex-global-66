@@ -19,8 +19,8 @@ describe('PokemonRepository', () => {
     it('should fetch all pokemons with default parameters', async () => {
       const mockResponse = {
         results: [
-          { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
-          { name: 'ivysaur', url: 'https://pokeapi.co/api/v2/pokemon/2/' },
+          { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/', id: 1 },
+          { name: 'ivysaur', url: 'https://pokeapi.co/api/v2/pokemon/2/', id: 2 },
         ],
         count: 2,
         next: null,
@@ -37,7 +37,7 @@ describe('PokemonRepository', () => {
 
     it('should fetch all pokemons with custom offset and limit', async () => {
       const mockResponse = {
-        results: [{ name: 'charmander', url: 'https://pokeapi.co/api/v2/pokemon/4/' }],
+        results: [{ name: 'charmander', url: 'https://pokeapi.co/api/v2/pokemon/4/', id: 4 }],
         count: 1,
         next: null,
         previous: null,
