@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { onMounted, computed } from 'vue'
-import { usePokemonStore } from '@/stores/pokemon'
+import { usePokemonStore } from '@/stores/pokemonStore'
 
 const pokemonStore = usePokemonStore()
 const LIMIT = 20
