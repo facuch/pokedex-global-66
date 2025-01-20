@@ -1,5 +1,7 @@
 # pokedex-global-66
 
+Live Demo: https://facuch.github.io/pokedex-global-66/
+
 ## Project Setup
 
 ```sh
