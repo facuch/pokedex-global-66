@@ -9,7 +9,7 @@ import { usePokemonCacheStore } from '@/stores/pokemonCacheStore'
 const props = defineProps<{
   pokemonId: number | undefined
   isOpen: boolean
-  isFavorite: boolean
+  isFavorite?: boolean
 }>()
 
 const emit = defineEmits<{

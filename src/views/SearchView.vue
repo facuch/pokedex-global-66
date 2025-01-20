@@ -120,6 +120,7 @@ onMounted(async () => {
         @click="loadMore"
         :text="pokemonStore.isLoading ? 'Loading...' : 'Load More'"
         :disabled="pokemonStore.isLoading || !canLoadMore"
+        class="load-more-button"
       />
     </div>
     <TabBar @tab-change="handleTabChange" />
