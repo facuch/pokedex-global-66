@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type SimplePokemon from '@/interfaces/SimplePokemon'
-import Fav from '@/assets/active.png'
+import Fav from '@/assets/Active.png'
 import Unfav from '@/assets/Disabled.png'
 
 interface PokemonList {

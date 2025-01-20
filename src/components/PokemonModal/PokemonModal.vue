@@ -2,7 +2,7 @@
 import { ref, watch, onMounted } from 'vue'
 import type Pokemon from '@/interfaces/Pokemon'
 import ButtonComponent from '../Button/ButtonComponent.vue'
-import Fav from '@/assets/active.png'
+import Fav from '@/assets/Active.png'
 import Unfav from '@/assets/Disabled.png'
 import { usePokemonCacheStore } from '@/stores/pokemonCacheStore'
 
