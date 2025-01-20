@@ -3,15 +3,17 @@ interface ButtonProps {
   text: string
   onClick: () => void
   disabled?: boolean
-  icon?: string // URL de la imagen o nombre del icono
+  icon?: string
+  tabBar?: boolean
 }
 
 const props = withDefaults(defineProps<ButtonProps>(), {
   disabled: false,
+  tabBar: false,
 })
 
 const handleClick = () => {
-  if (!props.disabled) {
+  if (!props.disabled || props.tabBar) {
     props.onClick()
   }
 }
@@ -20,7 +22,7 @@ const handleClick = () => {
 <template>
   <div>
     <button
-      :disabled="props.disabled"
+      :disabled="props.disabled && !props.tabBar"
       @click="handleClick"
       :class="['button', props.disabled ? 'disabled' : '']"
     >

@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { usePokemonStore } from '@/stores/pokemonStore'
 import { useFavoritesStore } from '@/stores/favoritesStore'
 import type SimplePokemon from '@/interfaces/SimplePokemon'
 import PokemonList from '@/components/PokemonList/PokemonList.vue'
+import TabBar from '@/components/TabBar/TabBar.vue'
 
 const pokemonStore = usePokemonStore()
 const favoritesStore = useFavoritesStore()
 const LIMIT = 20
+
+const activeTab = ref<'all' | 'favorites'>('all')
+
+const displayedPokemons = computed(() => {
+  return activeTab.value === 'all' ? pokemonStore.pokemons : favoritesStore.favorites
+})
 
 const canLoadMore = computed(() => {
   return pokemonStore.pagination?.next !== null
@@ -28,6 +35,10 @@ const toggleFavorite = async (pokemon: SimplePokemon) => {
   }
 }
 
+const handleTabChange = (tab: 'all' | 'favorites') => {
+  activeTab.value = tab
+}
+
 onMounted(async () => {
   if (pokemonStore.pokemons.length === 0) {
     await pokemonStore.fetchAllPokemons(0, LIMIT)
@@ -38,15 +49,16 @@ onMounted(async () => {
 <template>
   <div class="search-view">
     <PokemonList
-      :pokemons="pokemonStore.pokemons"
+      :pokemons="displayedPokemons"
       :toggleFavorite="toggleFavorite"
       :isFavorite="favoritesStore.isFavorite"
     />
-    <div class="load-more">
+    <div v-if="activeTab === 'all'" class="load-more">
       <button @click="loadMore" :disabled="pokemonStore.isLoading || !canLoadMore">
         {{ pokemonStore.isLoading ? 'Loading...' : 'Load More' }}
       </button>
     </div>
+    <TabBar @tab-change="handleTabChange" />
   </div>
 </template>
 
@@ -55,14 +67,20 @@ onMounted(async () => {
   width: 100%;
   max-width: 570px;
   display: flex;
-  justify-content: center;
-  align-items: 'center';
   flex-direction: column;
+  padding-bottom: 60px;
+  min-height: 100vh;
 }
 .load-more {
   display: flex;
   justify-content: center;
   margin-top: 20px;
+}
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 button {
