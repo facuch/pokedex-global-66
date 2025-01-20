@@ -1,6 +1,6 @@
 # pokedex-global-66
 
-Live Demo: https://facuch.github.io/pokedex-global-66/
+Live Demo: (https://pokedex-global-66.vercel.app/)
 
 ## Project Setup
 
