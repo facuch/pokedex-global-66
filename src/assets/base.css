@@ -9,6 +9,7 @@
   --placeholder: #bfbfbf;
   --background: #f9f9f9;
   --grey-background: #e8e8e8;
+  --font-grey: #5e5e5e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,6 +31,7 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
+  font-family: 'Lato', serif;
   font-weight: normal;
 }
 
