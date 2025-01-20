@@ -22,11 +22,11 @@ const handlePokemonClick = (pokemon: SimplePokemon) => {
 </script>
 
 <template>
-  <div>
+  <div class="pokemon-list-container">
     <ul>
       <li v-for="pokemon in props.pokemons" :key="pokemon.id" @click="handlePokemonClick(pokemon)">
         {{ pokemon.name }}
-        <button @click="props.toggleFavorite(pokemon)">
+        <button @click.stop="props.toggleFavorite(pokemon)">
           <img :src="props.isFavorite(pokemon.id) ? Fav : Unfav" alt="Fav icon" />
         </button>
       </li>
@@ -35,29 +35,42 @@ const handlePokemonClick = (pokemon: SimplePokemon) => {
 </template>
 
 <style scoped>
-ul {
-  background-color: red;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-direction: column;
+.pokemon-list-container {
+  width: 100%;
+  max-width: 570px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
   background-color: var(--white);
   border-radius: 5px;
-  width: 100%;
-  padding-left: 10px;
+  padding: 10px;
   text-transform: capitalize;
+  cursor: pointer;
 }
 
 button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1.2em;
+  padding: 5px;
+}
+
+button img {
+  width: 24px;
+  height: 24px;
 }
 </style>
