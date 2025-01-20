@@ -14,6 +14,7 @@ const LIMIT = 20
 
 const activeTab = ref<'all' | 'favorites'>('all')
 const searchQuery = ref('')
+const fakeLoader = ref(true)
 
 const displayedPokemons = computed(() => {
   const pokemons = activeTab.value === 'all' ? pokemonStore.pokemons : favoritesStore.favorites
@@ -32,6 +33,10 @@ const canLoadMore = computed(() => {
 const noResults = computed(() => {
   return searchQuery.value !== '' && displayedPokemons.value.length === 0
 })
+
+setTimeout(() => {
+  fakeLoader.value = false
+}, 1500)
 
 const loadMore = async () => {
   if (canLoadMore.value) {
@@ -69,7 +74,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="search-view">
+  <div v-if="pokemonStore.isLoading || fakeLoader" class="spinner-div">
+    <img src="@/assets/Loader.png" alt="Loading" class="spinner" />
+  </div>
+  <div v-else class="search-view">
     <SearchBar @search="handleSearch" v-model:value="searchQuery" />
     <div v-if="noResults" class="no-results">
       <span class="title">Uh-oh!</span>
@@ -143,5 +151,23 @@ button {
   text-align: center;
   margin-bottom: 10px;
   color: var(--font-grey);
+}
+
+.spinner-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.spinner {
+  animation: rotation 2s infinite linear;
+}
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
 }
 </style>
