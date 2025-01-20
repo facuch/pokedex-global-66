@@ -7,6 +7,7 @@ import PokemonList from '@/components/PokemonList/PokemonList.vue'
 import TabBar from '@/components/TabBar/TabBar.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
 import ButtonComponent from '@/components/Button/ButtonComponent.vue'
+import PokemonModal from '@/components/PokemonModal/PokemonModal.vue'
 
 const pokemonStore = usePokemonStore()
 const favoritesStore = useFavoritesStore()
@@ -15,6 +16,8 @@ const LIMIT = 20
 const activeTab = ref<'all' | 'favorites'>('all')
 const searchQuery = ref('')
 const fakeLoader = ref(true)
+const selectedPokemonId = ref<number | undefined>(undefined)
+const isModalOpen = ref(false)
 
 const displayedPokemons = computed(() => {
   const pokemons = activeTab.value === 'all' ? pokemonStore.pokemons : favoritesStore.favorites
@@ -66,6 +69,27 @@ const handleCleanSearch = () => {
   activeTab.value = 'all'
 }
 
+const openModal = (pokemon: SimplePokemon) => {
+  selectedPokemonId.value = pokemon.id
+  isModalOpen.value = true
+}
+
+const closeModal = () => {
+  isModalOpen.value = false
+  selectedPokemonId.value = undefined
+}
+
+const toggleFavoriteInModal = (id: number) => {
+  if (favoritesStore.isFavorite(id)) {
+    favoritesStore.removeFavorite(id)
+  } else {
+    const pokemon = pokemonStore.pokemons.find((p) => p.id === id)
+    if (pokemon) {
+      favoritesStore.addFavorite(pokemon)
+    }
+  }
+}
+
 onMounted(async () => {
   if (pokemonStore.pokemons.length === 0) {
     await pokemonStore.fetchAllPokemons(0, LIMIT)
@@ -89,6 +113,7 @@ onMounted(async () => {
       :pokemons="displayedPokemons"
       :toggleFavorite="toggleFavorite"
       :isFavorite="favoritesStore.isFavorite"
+      @pokemon-selected="openModal"
     />
     <div v-if="activeTab === 'all' && !noResults" class="load-more">
       <ButtonComponent
@@ -98,6 +123,13 @@ onMounted(async () => {
       />
     </div>
     <TabBar @tab-change="handleTabChange" />
+    <PokemonModal
+      :pokemon-id="selectedPokemonId"
+      :is-open="isModalOpen"
+      @close="closeModal"
+      :is-favorite="favoritesStore.isFavorite(selectedPokemonId)"
+      @toggle-favorite="toggleFavoriteInModal"
+    />
   </div>
 </template>
 

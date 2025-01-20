@@ -10,13 +10,22 @@ interface PokemonList {
 }
 
 const props = defineProps<PokemonList>()
+
+const emit = defineEmits<{
+  (e: 'pokemonSelected', pokemon: SimplePokemon): void
+}>()
+
+const handlePokemonClick = (pokemon: SimplePokemon) => {
+  console.log('opened')
+  emit('pokemonSelected', pokemon)
+}
 </script>
 
 <template>
   <div>
     <ul>
-      <li v-for="pokemon in props.pokemons" :key="pokemon.id">
-        {{ pokemon.name }} (ID: {{ pokemon.id }})
+      <li v-for="pokemon in props.pokemons" :key="pokemon.id" @click="handlePokemonClick(pokemon)">
+        {{ pokemon.name }}
         <button @click="props.toggleFavorite(pokemon)">
           <img :src="props.isFavorite(pokemon.id) ? Fav : Unfav" alt="Fav icon" />
         </button>
@@ -42,6 +51,7 @@ li {
   border-radius: 5px;
   width: 100%;
   padding-left: 10px;
+  text-transform: capitalize;
 }
 
 button {
