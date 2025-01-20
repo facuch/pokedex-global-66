@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import type Pokemon from '@/interfaces/Pokemon'
-import PokemonRepository from '@/repository/PokemonRepository'
 import ButtonComponent from '../Button/ButtonComponent.vue'
 import Fav from '@/assets/active.png'
 import Unfav from '@/assets/Disabled.png'
+import { usePokemonCacheStore } from '@/stores/pokemonCacheStore'
 
 const props = defineProps<{
   pokemonId: number | undefined
@@ -17,18 +17,18 @@ const emit = defineEmits<{
   (e: 'toggleFavorite', id: number): void
 }>()
 
-const pokemon = ref<Pokemon | null>(null)
+const pokemonCacheStore = usePokemonCacheStore()
 const isLoading = ref(false)
 const error = ref<string | null>(null)
+const pokemon = ref<Pokemon | null>(null)
 
 const fetchPokemonData = async (id: number) => {
   isLoading.value = true
   error.value = null
   try {
-    pokemon.value = await PokemonRepository.getPokemon(id)
-  } catch (err) {
-    error.value = 'Failed to load Pokemon data'
-    console.error(err)
+    pokemon.value = await pokemonCacheStore.fetchPokemonData(id)
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'An error occurred'
   } finally {
     isLoading.value = false
   }
@@ -44,6 +44,12 @@ watch(
     }
   },
 )
+
+onMounted(() => {
+  if (props.isOpen && props.pokemonId) {
+    fetchPokemonData(props.pokemonId)
+  }
+})
 
 const toggleFavorite = () => {
   if (pokemon.value) {
@@ -64,21 +70,26 @@ const toggleFavorite = () => {
           <img :src="pokemon.image" :alt="pokemon.name" class="pokemon-image" />
         </div>
         <div class="pokemon-info">
-          <p>
+          <p class="pokemon-name">
             Name: <span>{{ pokemon.name }}</span>
           </p>
-          <p>
+          <p class="pokemon-height">
             Height: <span>{{ pokemon.height }}</span>
           </p>
-          <p>
+          <p class="pokemon-weight">
             Weight: <span>{{ pokemon.weight }}</span>
           </p>
-          <p>
+          <p class="pokemon-type">
             Types: <span>{{ pokemon.type }}</span>
           </p>
           <div class="button-container">
             <ButtonComponent text="Share to my friends" :onClick="() => {}" />
-            <img :src="isFavorite ? Fav : Unfav" alt="Fav icon" @click="toggleFavorite" />
+            <img
+              :src="isFavorite ? Fav : Unfav"
+              alt="Fav icon"
+              @click="toggleFavorite"
+              class="favorite-icon"
+            />
           </div>
         </div>
       </div>
