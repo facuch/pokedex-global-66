@@ -56,6 +56,21 @@ const toggleFavorite = () => {
     emit('toggleFavorite', pokemon.value.id)
   }
 }
+
+const copyPokemonData = () => {
+  if (pokemon.value) {
+    const { name, height, weight, type } = pokemon.value
+    const pokemonData = `${name},${height},${weight},${type}`
+    navigator.clipboard
+      .writeText(pokemonData)
+      .then(() => {
+        alert('Pokemon data copied to clipboard!')
+      })
+      .catch((err) => {
+        console.error('Failed to copy text: ', err)
+      })
+  }
+}
 </script>
 
 <template>
@@ -83,7 +98,7 @@ const toggleFavorite = () => {
             Types: <span>{{ pokemon.type }}</span>
           </p>
           <div class="button-container">
-            <ButtonComponent text="Share to my friends" :onClick="() => {}" />
+            <ButtonComponent text="Share to my friends" :onClick="copyPokemonData" />
             <img
               :src="isFavorite ? Fav : Unfav"
               alt="Fav icon"
@@ -118,6 +133,7 @@ const toggleFavorite = () => {
   max-height: 80%;
   overflow-y: auto;
   padding-bottom: 10px;
+  margin: 0px 10px;
 }
 
 .close-button {
