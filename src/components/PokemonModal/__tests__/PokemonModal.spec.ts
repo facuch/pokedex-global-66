@@ -18,6 +18,10 @@ const mockPokemon: Pokemon = {
 
 type PokemonCacheStore = ReturnType<typeof usePokemonCacheStore>
 
+// Add this type definition
+type NavigatorWithClipboard = Navigator & {
+  clipboard: { writeText: (text: string) => Promise<void> }
+}
 interface MockStore extends Partial<PokemonCacheStore> {
   fetchPokemonData: ReturnType<typeof vi.fn>
   isLoading?: boolean
@@ -142,5 +146,33 @@ describe('PokemonModal', () => {
 
     expect(wrapper.emitted('toggleFavorite')).toBeTruthy()
     expect(wrapper.emitted('toggleFavorite')?.[0]).toEqual([1])
+  })
+
+  it('copies Pokemon data to clipboard when Share button is clicked', async () => {
+    const mockClipboard = {
+      writeText: vi.fn().mockResolvedValue(undefined),
+    }
+
+    // Use the new type for the navigator
+    const originalNavigator = global.navigator
+    global.navigator = {
+      ...originalNavigator,
+      clipboard: mockClipboard,
+    } as unknown as NavigatorWithClipboard
+
+    const wrapper = mountComponent({
+      pokemonId: 1,
+      isOpen: true,
+      isFavorite: false,
+    })
+
+    await flushPromises()
+
+    const shareButton = wrapper.find('button')
+    await shareButton.trigger('click')
+
+    expect(mockClipboard.writeText).toHaveBeenCalledWith('bulbasaur,7,69,grass, poison')
+
+    // Clean up
   })
 })
