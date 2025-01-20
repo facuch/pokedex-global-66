@@ -3,25 +3,34 @@ import { ref, watch } from 'vue'
 import SearchIcon from '@/assets/Search.svg'
 
 const props = defineProps<{
-  initialQuery?: string
+  value: string
 }>()
 
 const emit = defineEmits<{
-  (e: 'search', query: string): void
+  (e: 'search', value: string): void
+  (e: 'update:value', value: string): void
 }>()
 
-const searchQuery = ref(props.initialQuery || '')
+const localSearchQuery = ref(props.value)
 
-watch(searchQuery, (newQuery) => {
-  emit('search', newQuery)
-})
+watch(
+  () => props.value,
+  (newValue) => {
+    localSearchQuery.value = newValue
+  },
+)
+
+const handleInput = () => {
+  emit('update:value', localSearchQuery.value)
+  emit('search', localSearchQuery.value)
+}
 </script>
 
 <template>
   <div class="search-bar">
     <div class="search-input-wrapper">
       <img :src="SearchIcon" alt="Search" class="search-icon" />
-      <input type="text" v-model="searchQuery" placeholder="Search" />
+      <input type="text" v-model="localSearchQuery" @input="handleInput" placeholder="Search" />
     </div>
   </div>
 </template>

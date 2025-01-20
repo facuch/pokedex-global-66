@@ -6,6 +6,7 @@ import type SimplePokemon from '@/interfaces/SimplePokemon'
 import PokemonList from '@/components/PokemonList/PokemonList.vue'
 import TabBar from '@/components/TabBar/TabBar.vue'
 import SearchBar from '@/components/SearchBar/SearchBar.vue'
+import ButtonComponent from '@/components/Button/ButtonComponent.vue'
 
 const pokemonStore = usePokemonStore()
 const favoritesStore = useFavoritesStore()
@@ -26,6 +27,10 @@ const displayedPokemons = computed(() => {
 
 const canLoadMore = computed(() => {
   return pokemonStore.pagination?.next !== null
+})
+
+const noResults = computed(() => {
+  return searchQuery.value !== '' && displayedPokemons.value.length === 0
 })
 
 const loadMore = async () => {
@@ -51,6 +56,11 @@ const handleSearch = (query: string) => {
   searchQuery.value = query
 }
 
+const handleCleanSearch = () => {
+  searchQuery.value = ''
+  activeTab.value = 'all'
+}
+
 onMounted(async () => {
   if (pokemonStore.pokemons.length === 0) {
     await pokemonStore.fetchAllPokemons(0, LIMIT)
@@ -60,16 +70,24 @@ onMounted(async () => {
 
 <template>
   <div class="search-view">
-    <SearchBar @search="handleSearch" />
+    <SearchBar @search="handleSearch" v-model:value="searchQuery" />
+    <div v-if="noResults" class="no-results">
+      <span class="title">Uh-oh!</span>
+      <span class="subtitle">You look lost on your journey!</span>
+      <ButtonComponent :text="'Go to Home'" @click="handleCleanSearch" />
+    </div>
     <PokemonList
+      v-else
       :pokemons="displayedPokemons"
       :toggleFavorite="toggleFavorite"
       :isFavorite="favoritesStore.isFavorite"
     />
-    <div v-if="activeTab === 'all'" class="load-more">
-      <button @click="loadMore" :disabled="pokemonStore.isLoading || !canLoadMore">
-        {{ pokemonStore.isLoading ? 'Loading...' : 'Load More' }}
-      </button>
+    <div v-if="activeTab === 'all' && !noResults" class="load-more">
+      <ButtonComponent
+        @click="loadMore"
+        :text="pokemonStore.isLoading ? 'Loading...' : 'Load More'"
+        :disabled="pokemonStore.isLoading || !canLoadMore"
+      />
     </div>
     <TabBar @tab-change="handleTabChange" />
   </div>
@@ -101,5 +119,29 @@ button {
   border: none;
   cursor: pointer;
   font-size: 1.2em;
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 43.2px;
+  text-align: center;
+  text-decoration-skip-ink: none;
+  margin-bottom: 10px;
+}
+.subtitle {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 30px;
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--font-grey);
 }
 </style>

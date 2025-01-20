@@ -35,7 +35,7 @@ const click = () => {
   font-size: 18px;
   font-weight: 500;
   line-height: 27px;
-  color: var(--grey-font);
+  color: var(--font-grey);
   margin-top: 10px;
   margin-bottom: 30px;
 }
