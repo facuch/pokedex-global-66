@@ -5,15 +5,23 @@ import { useFavoritesStore } from '@/stores/favoritesStore'
 import type SimplePokemon from '@/interfaces/SimplePokemon'
 import PokemonList from '@/components/PokemonList/PokemonList.vue'
 import TabBar from '@/components/TabBar/TabBar.vue'
+import SearchBar from '@/components/SearchBar/SearchBar.vue'
 
 const pokemonStore = usePokemonStore()
 const favoritesStore = useFavoritesStore()
 const LIMIT = 20
 
 const activeTab = ref<'all' | 'favorites'>('all')
+const searchQuery = ref('')
 
 const displayedPokemons = computed(() => {
-  return activeTab.value === 'all' ? pokemonStore.pokemons : favoritesStore.favorites
+  const pokemons = activeTab.value === 'all' ? pokemonStore.pokemons : favoritesStore.favorites
+  if (searchQuery.value) {
+    return pokemons.filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+    )
+  }
+  return pokemons
 })
 
 const canLoadMore = computed(() => {
@@ -39,6 +47,10 @@ const handleTabChange = (tab: 'all' | 'favorites') => {
   activeTab.value = tab
 }
 
+const handleSearch = (query: string) => {
+  searchQuery.value = query
+}
+
 onMounted(async () => {
   if (pokemonStore.pokemons.length === 0) {
     await pokemonStore.fetchAllPokemons(0, LIMIT)
@@ -48,6 +60,7 @@ onMounted(async () => {
 
 <template>
   <div class="search-view">
+    <SearchBar @search="handleSearch" />
     <PokemonList
       :pokemons="displayedPokemons"
       :toggleFavorite="toggleFavorite"
