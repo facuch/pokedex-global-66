@@ -16,7 +16,6 @@ const emit = defineEmits<{
 }>()
 
 const handlePokemonClick = (pokemon: SimplePokemon) => {
-  console.log('opened')
   emit('pokemonSelected', pokemon)
 }
 </script>
