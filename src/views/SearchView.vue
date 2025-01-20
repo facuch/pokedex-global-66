@@ -2,6 +2,8 @@
 import { onMounted, computed } from 'vue'
 import { usePokemonStore } from '@/stores/pokemonStore'
 import { useFavoritesStore } from '@/stores/favoritesStore'
+import type SimplePokemon from '@/interfaces/SimplePokemon'
+import PokemonList from '@/components/PokemonList/PokemonList.vue'
 
 const pokemonStore = usePokemonStore()
 const favoritesStore = useFavoritesStore()
@@ -18,11 +20,11 @@ const loadMore = async () => {
   }
 }
 
-const toggleFavorite = async (pokemon) => {
+const toggleFavorite = async (pokemon: SimplePokemon) => {
   if (favoritesStore.isFavorite(pokemon.id)) {
     await favoritesStore.removeFavorite(pokemon.id)
   } else {
-    await favoritesStore.addFavorite({ id: pokemon.id, name: pokemon.name })
+    await favoritesStore.addFavorite({ id: pokemon.id, name: pokemon.name, url: pokemon.url })
   }
 }
 
@@ -34,16 +36,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <h1>Pokémon List</h1>
-    <ul>
-      <li v-for="pokemon in pokemonStore.pokemons" :key="pokemon.id">
-        {{ pokemon.name }} (ID: {{ pokemon.id }})
-        <button @click="toggleFavorite(pokemon)">
-          {{ favoritesStore.isFavorite(pokemon.id) ? '❤️' : '🤍' }}
-        </button>
-      </li>
-    </ul>
+  <div class="search-view">
+    <PokemonList
+      :pokemons="pokemonStore.pokemons"
+      :toggleFavorite="toggleFavorite"
+      :isFavorite="favoritesStore.isFavorite"
+    />
     <div class="load-more">
       <button @click="loadMore" :disabled="pokemonStore.isLoading || !canLoadMore">
         {{ pokemonStore.isLoading ? 'Loading...' : 'Load More' }}
@@ -53,17 +51,18 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.search-view {
+  width: 100%;
+  max-width: 570px;
+  display: flex;
+  justify-content: center;
+  align-items: 'center';
+  flex-direction: column;
+}
 .load-more {
   display: flex;
   justify-content: center;
   margin-top: 20px;
-}
-
-li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
 }
 
 button {

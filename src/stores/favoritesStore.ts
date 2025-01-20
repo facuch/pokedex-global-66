@@ -35,12 +35,14 @@ export const useFavoritesStore = defineStore('favorites', () => {
     }
   }
 
-  const removeFavorite = async (pokemonId: number) => {
+  const removeFavorite = async (pokemonId: number | undefined) => {
+    if (!pokemonId) return
     favorites.value = favorites.value.filter((fav) => fav.id !== pokemonId)
     await saveFavorites()
   }
 
-  const isFavorite = (pokemonId: number): boolean => {
+  const isFavorite = (pokemonId: number | undefined): boolean => {
+    if (pokemonId === undefined) return false
     return favorites.value.some((fav) => fav.id === pokemonId)
   }
 
