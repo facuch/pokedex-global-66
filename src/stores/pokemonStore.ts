@@ -64,7 +64,6 @@ export const usePokemonStore = defineStore('pokemon', () => {
 
   const fetchMorePokemons = async (offset: number = 0, limit: number = 20) => {
     isLoading.value = true
-    console.log('llamando', offset, limit)
     try {
       const cachedData = await loadPokemonsFromCache(offset, limit)
       let newPokemons: SimplePokemon[]
